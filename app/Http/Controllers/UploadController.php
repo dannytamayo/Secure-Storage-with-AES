@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Models\Folder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
     public function index($id)
     {
 
-        $folder = Folder::find($id); // Asegúrate de que tu modelo Folder tenga el método 'find'
+        $folder = Folder::find($id); 
 
         return view('upload.show', compact('folder'));
     }
@@ -19,10 +22,11 @@ class UploadController extends Controller
     public function upload(Request $request)
     {
 
-        // dd($request->files);
+        // dd($request->file('files'));
 
         $request->validate([
-            'files.*' => 'mimes:pdf,doc|max:10240', // Ajusta los tipos de archivos permitidos y el tamaño máximo según tus necesidades.
+            'parent' => 'required',
+            'files' => 'required',
         ]);
 
         $parent_id = $request->parent;
@@ -41,10 +45,33 @@ class UploadController extends Controller
 
         $folderPath = join("/", $folders);
 
+
+
         foreach ($request->file('files') as $file) {
-            Storage::put($folderPath, $file);
+            $nombreOriginal = $file->getClientOriginalName();
+
+            // Genera una clave de cifrado única para cada archivo
+            $encryptionKey = Str::random(32); // Puedes ajustar la longitud según tus necesidades
+
+            // Cifra el contenido del archivo
+            $encryptedContent = Crypt::encrypt(file_get_contents($file), $encryptionKey);
+
+            // Guarda el archivo cifrado en el sistema de archivos
+            $fileSave = Storage::put($folderPath . '/' . $nombreOriginal, $encryptedContent);
+
+            // Guarda la clave de cifrado en la base de datos
+            $fileModel = new File([
+                'name' => $nombreOriginal,
+                'path' => $folderPath,
+                'parent_id' => $parent_id,
+                'encryption_key' => $encryptionKey,
+            ]);
+
+            $fileModel->save();
         }
 
-        return redirect()->back();
+        $folder = Folder::find($parent_id); // Asegúrate de que tu modelo Folder tenga el método 'find'
+
+        return redirect()->route('folder.show', compact('folder'));
     }
 }

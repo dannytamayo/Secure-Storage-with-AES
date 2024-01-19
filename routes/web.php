@@ -4,8 +4,10 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\MicrosoftController;
 use App\Http\Controllers\ExplorerController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FiseiController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\RolController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,13 +45,18 @@ Route::get('auth/microsoft/callback', [MicrosoftController::class, 'handleMicros
 
 Route::prefix('dashboard')->group(function () {
 
-    Route::get('users', [UserController::class, 'index'])->name('admin.users');
-    Route::resource('folder', FolderController::class);
-    Route::get('folder/upload/{id}', [UploadController::class, 'index'])->name('upload.files');
-    Route::post('folder/upload', [UploadController::class, 'upload'])->name('upload');
+    Route::resource('rol', RolController::class);
     
 })->middleware('auth.admin');
 
 
+// Route::group(['middleware' => 'checkFolderPermission'], function () {
+    Route::resource('folder', FolderController::class);
+    
+    Route::get('folder/upload/{id}', [UploadController::class, 'index'])->name('upload.files');
+    Route::post('folder/upload', [UploadController::class, 'upload'])->name('upload');
+    Route::delete('folder/delete/file/{id}', [FileController::class, 'destroy'])->name('file.destroy');
+    Route::get('folder/download/file/{id}', [FileController::class, 'download'])->name('file.download');
+// });
 
 

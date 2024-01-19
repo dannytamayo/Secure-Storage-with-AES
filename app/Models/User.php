@@ -83,5 +83,7 @@ class User extends Authenticatable
             : $this->getPhotoUrl();
     }
 
-    
+    public function permissions(){
+        return $this->hasMany(FolderPermission::class, 'user_id');
+    }
 }

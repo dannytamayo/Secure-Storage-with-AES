@@ -20,7 +20,7 @@ class RolesRedirect
             if (auth()->user()->getRoleNames()[0] === 'Super Usuario') {
                 return redirect()->to('/dashboard');
             } else {
-                return redirect()->to('/explorer');
+                return redirect()->to('/folder');
             }
         } else {
             return redirect()->to('/login');

@@ -39,7 +39,7 @@ class MicrosoftController extends Controller
                     'oauth_type' => static::MICROSOFT_TYPE,
                     'password' => Hash::make($user->password)
 
-                ])->assignRole('Secretaria General');
+                ])->assignRole('Secretaria');
 
                 Auth::login($newUser);
 

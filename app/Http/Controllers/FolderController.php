@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Models\Folder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -14,10 +16,40 @@ class FolderController extends Controller
      */
     public function index()
     {
-        $folders = Folder::whereNull('parent_id')->get();
-        // dd($folders);
+        $user =  Auth::user();
 
-        return view('folder.index', compact('folders'));
+        $rol = $user->getRoleNames()[0];
+
+        $folders = array();
+
+        $currentFolderPath = '/';
+        if ($rol === 'Super Usuario') {
+            $folders = Folder::whereNull('parent_id')->get();
+            $files = [];
+        } else {
+            $rootFolder = $user->permissions[0];
+            $folders = Folder::where('parent_id', '=', $rootFolder->folder_id)->get();
+            $files = File::where('parent_id', '=', $rootFolder->folder_id)->get();
+            $fs = array();
+            $nodoActual = Folder::find($rootFolder->folder_id);
+
+            while ($nodoActual !== null) {
+
+                array_push($fs, $nodoActual->name);;
+                $nodoActual = Folder::find($nodoActual->parent_id);
+            }
+
+            $fs = array_reverse($fs);
+
+        
+
+            $currentFolderPath = '/'. join("/", $fs);
+        }
+
+       
+
+
+        return view('folder.index', compact('folders','files', 'currentFolderPath'));
     }
 
     /**
@@ -25,7 +57,7 @@ class FolderController extends Controller
      */
     public function create()
     {
-       return view('dashboard');
+        //    return view('dashboard');
     }
 
     /**
@@ -33,6 +65,7 @@ class FolderController extends Controller
      */
     public function store(Request $request)
     {
+
 
         $nombreCarpeta = strtoupper($request->input('name'));
 
@@ -83,13 +116,10 @@ class FolderController extends Controller
                 if ($folder) {
 
                     return redirect()->route('folder.show', $folder);
-
-                }else{
+                } else {
 
                     return redirect()->route('folder.index');
-
                 }
-
             }
         } else {
 
@@ -97,7 +127,7 @@ class FolderController extends Controller
 
             if ($folder) {
                 return redirect()->route('folder.show', $folder)->with('info', 'Ya existe una carpeta con ese nombre');
-            }else{
+            } else {
                 return redirect()->route('folder.index')->with('info', 'Ya existe una carpeta con ese nombre');
             }
         }
@@ -108,13 +138,56 @@ class FolderController extends Controller
      */
     public function show(Folder $folder)
     {
+        $user = Auth::user();
+        $rol = $user->getRoleNames()[0];
+        // Verificar si el usuario tiene el rol 'Super Usuario'
+        if ($rol === 'Super Usuario') {
+            // El Super Usuario tiene acceso a cualquier carpeta
+        } else {
+            // Obtener todas las carpetas que el usuario tiene permiso de acceder
+            $allowedFolders = $user->permissions->pluck('folder_id')->toArray();
 
+            // Verificar que la carpeta a la que está tratando de acceder esté permitida
+            if (!in_array($folder->id, $allowedFolders)) {
+                // Construir el camino desde la carpeta actual hasta la raíz
+                $pathToRoot = [];
+                $currentFolder = $folder;
 
+                while ($currentFolder) {
+                    $pathToRoot[] = $currentFolder->id;
+                    $currentFolder = Folder::find($currentFolder->parent_id);
+                }
+
+                // Verificar que al menos una de las carpetas en el camino tenga permisos
+                if (count(array_intersect($pathToRoot, $allowedFolders)) === 0) {
+                    // Ninguna carpeta en el camino tiene permisos
+                    abort(403, 'No tienes permiso para acceder a esta carpeta.');
+                }
+            }
+        }
+
+        // Obtener las carpetas y archivos dentro de la carpeta actual
         $folders = Folder::where('parent_id', $folder->id)->get();
+        $files = File::where('parent_id', $folder->id)->get();
 
+        $fs = array();
+        $nodoActual = Folder::find($folder->id);
 
-        return view('folder.show', compact('folders', 'folder'));
+        while ($nodoActual !== null) {
+
+            array_push($fs, $nodoActual->name);;
+            $nodoActual = Folder::find($nodoActual->parent_id);
+        }
+
+        $fs = array_reverse($fs);
+
+    
+
+        $currentFolderPath = '/'. join("/", $fs);
+
+        return view('folder.show', compact('folders', 'folder', 'files', 'currentFolderPath'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -171,6 +244,4 @@ class FolderController extends Controller
 
         return join('/', array_reverse($folders));
     }
-
-  
 }

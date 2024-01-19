@@ -16,8 +16,11 @@
 
         @livewire('modal-create-folder', ['folder' => $folder])
 
+        <h1>{{$currentFolderPath}}</h1>
 
-        @if (count($folders) > 0)
+        <br>
+
+        @if (count($folders) > 0 || count($files) > 0)
 
 
             <div class="grid grid-cols-6 gap-4">
@@ -28,6 +31,12 @@
 
                         <x-card-folder :folder="$folder" />
 
+                    </a>
+                @endforeach
+
+                @foreach ($files as $file)
+                    <a href="{{ route('file.download', $file->id) }}">
+                        <x-card-file :file="$file" />
                     </a>
                 @endforeach
 

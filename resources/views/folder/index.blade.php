@@ -12,7 +12,7 @@
     @endif
 
     <div class="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex-col py-4 h-[calc(100vh-4.2rem)] w-full">
-
+        <h1>{{ $currentFolderPath }}</h1>
         @livewire('modal-create-folder')
 
         <div class="grid grid-cols-6 gap-4">
@@ -22,6 +22,12 @@
 
                     <x-card-folder :folder="$folder" />
 
+                </a>
+            @endforeach
+
+            @foreach ($files as $file)
+                <a href="{{ route('file.download', $file->id) }}">
+                    <x-card-file :file="$file" />
                 </a>
             @endforeach
 

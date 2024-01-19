@@ -4,7 +4,7 @@
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-5"
             wire:click="openModal">Crear carpeta</button>
 
-        @if (request()->path() != 'dashboard/folder')
+        @if (request()->path() != 'folder')
             <form action="{{ route('upload.files', $folder != null ? $folder->id : '') }}" method="GET">
                 @csrf
                 <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-5"
