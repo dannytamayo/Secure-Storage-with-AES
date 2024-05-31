@@ -58,7 +58,7 @@ php artisan migrate
 
 ### Crear Usuarios y Asignar Roles
 
-Para crear un usuario y asignarle un rol, navega a [http://tu_dominio.com/rol/create](http://tu_dominio.com/rol/create). Llena el formulario con los datos del usuario y selecciona el rol adecuado.
+Para crear un usuario y asignarle un rol, navega a [http://tu_dominio.com/rol/create]. Llena el formulario con los datos del usuario y selecciona el rol adecuado.
 
 ### Gestión de Archivos
 
