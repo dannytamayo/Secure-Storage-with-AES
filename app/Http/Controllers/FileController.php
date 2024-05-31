@@ -17,16 +17,12 @@ class FileController extends Controller
         if ($file) {
             $folder = Folder::find($file->parent_id);
 
-            // Guarda el path del archivo antes de eliminarlo de la base de datos
             $filePath = $this->getFilePath($folder, $file->name);
 
-            // Elimina el archivo de la base de datos
             $file->delete();
 
-            // Elimina el archivo físicamente
             Storage::delete($filePath);
 
-            // Redirige a la ruta deseada
             if ($folder) {
                 return redirect()->route('folder.show', $folder);
             }
@@ -35,7 +31,6 @@ class FileController extends Controller
         }
     }
 
-    // Método auxiliar para obtener la ruta completa del archivo en el almacenamiento
     private function getFilePath(Folder $folder, $fileName)
     {
         $folders = [];
@@ -57,16 +52,12 @@ class FileController extends Controller
     if ($file) {
         $filePath = $this->getFilePathD($file);
 
-        // Obtén la clave de cifrado desde la base de datos
         $encryptionKey = $file->encryption_key;
 
-        // Descifra el contenido del archivo
         $decryptedContent = Crypt::decrypt(Storage::get($filePath), $encryptionKey);
 
-        // Crea una respuesta con el contenido descifrado
         $response = response()->make($decryptedContent);
 
-        // Establece el encabezado de la respuesta para la descarga
         $response->header('Content-Type', Storage::mimeType($filePath));
         $response->header('Content-Disposition', 'attachment; filename="' . $file->name . '"');
 
@@ -75,7 +66,6 @@ class FileController extends Controller
 
     }
 
-    // Método auxiliar para obtener la ruta relativa del archivo en el almacenamiento
     private function getFilePathD(File $file)
     {
         $folders = [];

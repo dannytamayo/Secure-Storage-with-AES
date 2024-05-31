@@ -15,6 +15,7 @@ class RolesRedirect
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         if (auth()->check()) {
 
             if (auth()->user()->getRoleNames()[0] === 'Super Usuario') {

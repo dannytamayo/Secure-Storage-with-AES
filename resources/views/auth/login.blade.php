@@ -12,11 +12,11 @@
             </div>
         @endif
 
-        <div class="font-bold text-center text-1xl mb-4">
+        {{-- <div class="font-bold text-center text-1xl mb-4">
             INGRESAR AL SISTEMA
-        </div>
+        </div> --}}
 
-        <x-button onclick="loginWithMicrosoft()" class="w-full">
+        {{-- <x-button onclick="loginWithMicrosoft()" class="w-full">
             <div class="flex items-center justify-center w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 48 48">
                     <path fill="#ff5722" d="M6 6H22V22H6z" transform="rotate(-180 14 14)"></path>
@@ -28,9 +28,9 @@
                     Sign in with Microsoft
                 </span>
             </div>
-        </x-button>
+        </x-button> --}}
 
-        {{-- <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div>
@@ -68,7 +68,7 @@
 
         @if (JoelButcher\Socialstream\Socialstream::show())
             <x-socialstream />
-        @endif --}}
+        @endif
     </x-authentication-card>
 </x-guest-layout>
 

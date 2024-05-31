@@ -41,15 +41,15 @@ class FolderController extends Controller
 
             $fs = array_reverse($fs);
 
-        
 
-            $currentFolderPath = '/'. join("/", $fs);
+
+            $currentFolderPath = '/' . join("/", $fs);
         }
 
-       
 
 
-        return view('folder.index', compact('folders','files', 'currentFolderPath'));
+
+        return view('folder.index', compact('folders', 'files', 'currentFolderPath'));
     }
 
     /**
@@ -133,6 +133,7 @@ class FolderController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      */
@@ -140,16 +141,11 @@ class FolderController extends Controller
     {
         $user = Auth::user();
         $rol = $user->getRoleNames()[0];
-        // Verificar si el usuario tiene el rol 'Super Usuario'
         if ($rol === 'Super Usuario') {
-            // El Super Usuario tiene acceso a cualquier carpeta
         } else {
-            // Obtener todas las carpetas que el usuario tiene permiso de acceder
             $allowedFolders = $user->permissions->pluck('folder_id')->toArray();
 
-            // Verificar que la carpeta a la que está tratando de acceder esté permitida
             if (!in_array($folder->id, $allowedFolders)) {
-                // Construir el camino desde la carpeta actual hasta la raíz
                 $pathToRoot = [];
                 $currentFolder = $folder;
 
@@ -158,9 +154,7 @@ class FolderController extends Controller
                     $currentFolder = Folder::find($currentFolder->parent_id);
                 }
 
-                // Verificar que al menos una de las carpetas en el camino tenga permisos
                 if (count(array_intersect($pathToRoot, $allowedFolders)) === 0) {
-                    // Ninguna carpeta en el camino tiene permisos
                     abort(403, 'No tienes permiso para acceder a esta carpeta.');
                 }
             }
@@ -181,9 +175,9 @@ class FolderController extends Controller
 
         $fs = array_reverse($fs);
 
-    
 
-        $currentFolderPath = '/'. join("/", $fs);
+
+        $currentFolderPath = '/' . join("/", $fs);
 
         return view('folder.show', compact('folders', 'folder', 'files', 'currentFolderPath'));
     }
@@ -212,14 +206,11 @@ class FolderController extends Controller
     {
         $parentFolderId = $folder->parent_id;
 
-        // Elimina la carpeta del almacenamiento
         $folderPath = $this->getFolderPath($folder);
         Storage::deleteDirectory($folderPath);
 
-        // Elimina la carpeta de la base de datos
         $folder->delete();
 
-        // Redirige a la ruta deseada
         if ($parentFolderId !== null) {
 
             $folder = Folder::find($parentFolderId);
@@ -230,7 +221,6 @@ class FolderController extends Controller
         }
     }
 
-    // Método auxiliar para obtener la ruta completa de la carpeta en el almacenamiento
     private function getFolderPath(Folder $folder)
     {
         $folders = [];

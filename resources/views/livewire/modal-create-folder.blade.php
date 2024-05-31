@@ -19,7 +19,6 @@
 
         <div
             class="modal-container fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded shadow-md transition-transform duration-300 opacity-100">
-            <!-- Botón de cierre (x) en la esquina superior derecha -->
             <button class="text-2xl font-weight-bold text-gray-500 absolute top-0 right-0 mr-2  hover:text-red-500"
                 wire:click="closeModal">×</button>
 

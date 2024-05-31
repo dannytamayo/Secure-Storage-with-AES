@@ -50,16 +50,13 @@ class UploadController extends Controller
         foreach ($request->file('files') as $file) {
             $nombreOriginal = $file->getClientOriginalName();
 
-            // Genera una clave de cifrado única para cada archivo
-            $encryptionKey = Str::random(32); // Puedes ajustar la longitud según tus necesidades
+            $encryptionKey = Str::random(32); 
 
             // Cifra el contenido del archivo
             $encryptedContent = Crypt::encrypt(file_get_contents($file), $encryptionKey);
 
-            // Guarda el archivo cifrado en el sistema de archivos
             $fileSave = Storage::put($folderPath . '/' . $nombreOriginal, $encryptedContent);
 
-            // Guarda la clave de cifrado en la base de datos
             $fileModel = new File([
                 'name' => $nombreOriginal,
                 'path' => $folderPath,
@@ -70,7 +67,7 @@ class UploadController extends Controller
             $fileModel->save();
         }
 
-        $folder = Folder::find($parent_id); // Asegúrate de que tu modelo Folder tenga el método 'find'
+        $folder = Folder::find($parent_id); 
 
         return redirect()->route('folder.show', compact('folder'));
     }
