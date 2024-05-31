@@ -41,11 +41,35 @@ cp .env.example .env
 
 Edita el archivo .env con tus credenciales de base de datos:
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nombre_de_tu_base_de_datos
-DB_USERNAME=tu_usuario
-DB_PASSWORD=tu_contraseña
+DB_CONNECTION=mysql<br>
+DB_HOST=127.0.0.1<br>
+DB_PORT=3306<br>
+DB_DATABASE=nombre_de_tu_base_de_datos<br>
+DB_USERNAME=tu_usuario<br>
+DB_PASSWORD=tu_contraseña<br>
+
+### Paso 4: Ejecutar las migraciones
+
+```bash
+php artisan migrate
+```
+
+## Uso
+
+### Crear Usuarios y Asignar Roles
+
+Para crear un usuario y asignarle un rol, navega a [http://tu_dominio.com/rol/create](http://tu_dominio.com/rol/create). Llena el formulario con los datos del usuario y selecciona el rol adecuado.
+
+### Gestión de Archivos
+
+Los usuarios pueden crear carpetas y subir archivos encriptados desde su panel de usuario. Los archivos se encriptan usando AES y pueden ser descargados de manera segura.
+
+### Roles y Permisos
+
+- **Super Usuario:** Tiene acceso completo a todas las funcionalidades y paths.
+- **Secretaria General:** Tiene acceso a la mayoría de las funcionalidades con ciertas restricciones.
+- **Secretaria:** Tiene acceso limitado basado en las necesidades de su rol.
+
+    
 
 
