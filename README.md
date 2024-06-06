@@ -9,6 +9,11 @@ Este proyecto está diseñado para gestionar usuarios y asignarles roles especí
 3. **🔒 Gestión de Permisos**: Define los paths de acceso para cada usuario basado en su rol.
 4. **📁 Gestión de Archivos**: Permite crear carpetas, subir archivos que se encriptan con AES y descargar los archivos encriptados.
 
+## 🧰 Tecnología Utilizada
+
+- **🔧 Backend**: Laravel
+- **💻 Frontend**: Livewire, HTML, CSS, JS
+
 ## 📋 Requisitos
 
 - PHP >= 7.3
